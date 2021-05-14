@@ -49,13 +49,13 @@ class Board():
         return moves
        
     def pawn_move(self, row, column, moves):
-       # if self.white_first and row == 6:
-        if self.white_first:
-            if self.board[row-1][column] == ['--']:
-                moves.append(Move_Piece((row,column),(row-1,column),self.board))
-        elif not self.white_first:
-            if self.board[row+1][column] == ['--']:
-                moves.append(Move_Piece((row,column),(row-1,column),self.board))
+        if self.white_first and row == 6:
+            if self.white_first:
+                if self.board[row-1][column] == ['--']:
+                    moves.append(Move_Piece((row,column),(row-1,column),self.board))
+                    if row == 6 and self.board[row-2][column] == ['--']:   
+                        moves.append(Move_Piece((row,column),(row-2,column), self.board))
+
 
     def rook_move(self):
         pass

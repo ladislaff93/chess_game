@@ -2,7 +2,7 @@ from chess_engine import Board
 from chess_engine import Move_Piece 
 import pygame
 
-WIDTH = HEIGHT = 510            #setting up the width and height of chess board
+WIDTH = HEIGHT = 450            #setting up the width and height of chess board
 DIMENSIONS = 8                  #number of squares on one side 
 SQ_SIZE = HEIGHT // DIMENSIONS  
 BACKGROUND = (0,0,0)            #colour of the background. probably not needed
@@ -81,12 +81,10 @@ def main():
                 
                 if len(player_clicks) == 2:
                     move = Move_Piece(player_clicks[0],player_clicks[1], b.board)       #instentiation of move_piece class 
-                    if move in b.check_move():
+                    if move == b.check_move():
                         b.move_on_board(move)
                         sq_sel = ()
                         player_clicks = []        
-                    else:
-                        print('COCKSUCKAA!!!')
         w.draw_window()
     pygame.quit()   
 
