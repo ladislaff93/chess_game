@@ -60,6 +60,8 @@ def main():
     w = Window()
     b = w.b
     w.pieces_images()
+    valid_move = b.check_move()
+    move_check = False
     sq_sel = ()
     player_clicks = []
     run = True 
@@ -81,10 +83,14 @@ def main():
                 
                 if len(player_clicks) == 2:
                     move = Move_Piece(player_clicks[0],player_clicks[1], b.board)       #instentiation of move_piece class 
-                    if move == b.check_move():
+                    if move in valid_move:
                         b.move_on_board(move)
+                        move_check = True
                         sq_sel = ()
                         player_clicks = []        
+        if move_check:
+            valid_move 
+            move_check = False
         w.draw_window()
     pygame.quit()   
 

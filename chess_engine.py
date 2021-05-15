@@ -43,21 +43,24 @@ class Board():
                 if turn == 'w' and self.white_first or turn == 'b' and not self.white_first:
                     piece = self.board[row][column][0][1]
                     if piece == 'P':
-                       self.pawn_move(row,column,moves) 
+                       self.pawn_move(row, column, moves) 
                     elif piece == 'R':
-                        pass
+                       self.rook_move(row, column, moves)
         return moves
        
     def pawn_move(self, row, column, moves):
-        if self.white_first and row == 6:
-            if self.white_first:
-                if self.board[row-1][column] == ['--']:
-                    moves.append(Move_Piece((row,column),(row-1,column),self.board))
-                    if row == 6 and self.board[row-2][column] == ['--']:   
-                        moves.append(Move_Piece((row,column),(row-2,column), self.board))
+        if self.white_first: 
+            if self.board[row-1][column] == ['--']:
+                moves.append(Move_Piece((row,column),(row-1,column),self.board))
+                if row == 6 and self.board[row-2][column] == ['--']:   
+                    moves.append(Move_Piece((row,column),(row-2,column), self.board))
+        else:
+            if self.board[row+1][column] == ['--']:
+                moves.append(Move_Piece((row,column),(row+1,column),self.board))
+                if row == 1 and self.board[row+2][column] == ['--']:   
+                    moves.append(Move_Piece((row,column),(row+2,column), self.board))
 
-
-    def rook_move(self):
+    def rook_move(self, row, column, moves):
         pass
 
 
@@ -69,7 +72,13 @@ class Move_Piece():
         self.end_column = end_sq[1]                                                                     #from chess_main start_sq end column
         self.piece_moved = board[self.start_row][self.start_column]                                #variable of piece first selected
         self.piece_captured = board[self.end_row][self.end_column]                                 #variable of piece selected second
- 
+        self.ID = self.start_row*1000+self.start_column*100+self.end_row*10+self.end_column
+
+    def __eq__(self, other):
+        if isinstance(other, Move_Piece):
+            return self.ID == other.ID
+        return False 
+
     def algebraic_notation(self, move_log):
         self.numbers = ['8','7','6','5','4','3','2','1']                        #numbers for row 
         self.letters = ['a','b','c','d','e','f','g','h']                        #letters for column
