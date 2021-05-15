@@ -54,15 +54,23 @@ class Board():
                 moves.append(Move_Piece((row,column),(row-1,column),self.board))
                 if row == 6 and self.board[row-2][column] == ['--']:   
                     moves.append(Move_Piece((row,column),(row-2,column), self.board))
+
         else:
             if self.board[row+1][column] == ['--']:
-                moves.append(Move_Piece((row,column),(row+1,column),self.board))
-                if row == 1 and self.board[row+2][column] == ['--']:   
+                moves.append(Move_Piece((row,column),(row+1,column), self.board)) 
+                if row == 1 and self.board[row+2][column] == ['--']:
                     moves.append(Move_Piece((row,column),(row+2,column), self.board))
-
+         
     def rook_move(self, row, column, moves):
-        pass
+        if self.white_first:
+            for r in range(len(self.board)):
+                if self.board[row-r][column] == ['--'] or self.board[row-r][column][0][0] == 'b':
+                   moves.append(Move_Piece((row,column),((row-r),column), self.board))
 
+        else:
+            for r in range(len(self.board)):
+                if self.board[row+r][column] == ['--'] or self.board[row+r][column][0][0] == 'b':
+                   moves.append(Move_Piece((row,column),((row+r),column), self.board))
 
 class Move_Piece():
     def __init__(self, start_sq, end_sq, board):                          #engine part of moving pieces. we take start and end squares from chess_main-->move pieces-->player_clicks list
@@ -73,7 +81,7 @@ class Move_Piece():
         self.piece_moved = board[self.start_row][self.start_column]                                #variable of piece first selected
         self.piece_captured = board[self.end_row][self.end_column]                                 #variable of piece selected second
         self.ID = self.start_row*1000+self.start_column*100+self.end_row*10+self.end_column
-
+        
     def __eq__(self, other):
         if isinstance(other, Move_Piece):
             return self.ID == other.ID
