@@ -4,73 +4,94 @@ class Board():
         # . R-Rook, P-Pawn
         #N-knight, B-bishop, Q-queen, K-king.
         self.board=[
-            [["bR"],["bN"],["bB"],["bQ"],["bK"],["bB"],["bN"],["bR"]],
-            [["bP"],["bP"],["bP"],["bP"],["bP"],["bP"],["bP"],["bP"]],
-            [['--'],['--'],['--'],['--'],['--'],['--'],['--'],['--']],
-            [['--'],['--'],['--'],['--'],['--'],['--'],['--'],['--']],
-            [['--'],['--'],['--'],['--'],['--'],['--'],['--'],['--']],
-            [['--'],['--'],['--'],['--'],['--'],['--'],['--'],['--']],            
-            [["wP"],["wP"],["wP"],["wP"],["wP"],["wP"],["wP"],["wP"]],
-            [["wR"],["wN"],["wB"],["wQ"],["wK"],["wB"],["wN"],["wR"]]
+            ["bR","bN","bB","bQ","bK","bB","bN","bR"],
+            ["bP","bP","bP","bP","bP","bP","bP","bP"],
+            ['--','--','--','--','--','--','--','--'],
+            ['--','--','--','--','--','--','--','--'],
+            ['--','--','--','--','--','--','--','--'],
+            ['--','--','--','--','--','--','--','--'],            
+            ["wP","wP","wP","wP","wP","wP","wP","wP"],
+            ["wR","wN","wB","wQ","wK","wB","wN","wR"]
         ]
-        self.white_first = True                                                                         #logic for white first move. 
+        self.white_first = True                                       #logic for white first move. 
         print('WHITE IS ON THE MOVE!')
-        self.move_log = []                                                                              #move log for algebraic notation    
+        self.move_log = []                                            #move log for algebraic notation    
   
     def move_on_board(self, move):
-        self.board[move.start_row][move.start_column]=['--']
-        self.board[move.end_row][move.end_column]=move.piece_moved
-        #self.move_log.append(move.piece_moved)
-        #self.move_log.append(move.piece_captured)
-        move.algebraic_notation(self.move_log)                                                                   
+        self.board[move.start_row][move.start_column]='--'              #change the start square after moving piece
+        self.board[move.end_row][move.end_column]=move.piece_moved      #change the end square on start square
+        move.algebraic_notation(self.move_log)                          #return algebraic notation for actual move.                                             
         self.white_first = not self.white_first
         print('PIECE '+self.move_log[0]+' MOVE TO '+self.move_log[1])   
         if not self.white_first:
             print('BLACK IS ON THE MOVE!')
-        else:
+        elif self.white_first:
             print('WHITE IS ON THE MOVE!')    
+
         if len(self.move_log) == 2:
             self.move_log = []    
         
-    def check_move(self):
+    def check_move(self): #function for checking if the move what we made is actually legal. If the current move dont compromise the king piece(capturning).
         return self.piece_move()
 
-    def piece_move(self):
+    def piece_move(self): #for every piece on board function define it possible moves. And whose turn is(b or w)
         moves = []
         for row in range(len(self.board)):
             for column in range(len(self.board[row])):
-                turn = self.board[row][column][0][0]
-                if turn == 'w' and self.white_first or turn == 'b' and not self.white_first:
-                    piece = self.board[row][column][0][1]
+                turn = self.board[row][column][0]
+                if turn == 'w' and self.white_first or turn == 'b' and not self.white_first: 
+                    piece = self.board[row][column][1]                                       
                     if piece == 'P':
                        self.pawn_move(row, column, moves) 
                     elif piece == 'R':
                        self.rook_move(row, column, moves)
         return moves
        
-    def pawn_move(self, row, column, moves):
-        if self.white_first: 
-            if self.board[row-1][column] == ['--']:
+    def pawn_move(self, row, column, moves): #defining the piece moving logic. Pawn can move 2 or 1 square if is in start position or 1 if its not. 
+        turn = self.board[row][column][0]
+        if self.white_first and turn == 'w': 
+            if self.board[row-1][column] == '--':
                 moves.append(Move_Piece((row,column),(row-1,column),self.board))
-                if row == 6 and self.board[row-2][column] == ['--']:   
+                if row == 6 and self.board[row-2][column] == '--':   
                     moves.append(Move_Piece((row,column),(row-2,column), self.board))
-
+                    
+            if column+1 <= 7 and row-1 >= 0: #capturing to the right
+                if self.board[row-1][column+1][0] == 'b':
+                    moves.append(Move_Piece((row,column),(row-1,column+1),self.board))
+                
+            if column-1 >= 0 and row-1 >= 0:
+                if self.board[row-1][column-1][0] == 'b': #capturing piece to the left 
+                    moves.append(Move_Piece((row,column),(row-1,column-1),self.board))
+                    
         else:
-            if self.board[row+1][column] == ['--']:
+            if self.board[row+1][column] == '--':
                 moves.append(Move_Piece((row,column),(row+1,column), self.board)) 
-                if row == 1 and self.board[row+2][column] == ['--']:
+                if row == 1 and self.board[row+2][column] == '--':
                     moves.append(Move_Piece((row,column),(row+2,column), self.board))
          
-    def rook_move(self, row, column, moves):
-        if self.white_first:
-            for r in range(len(self.board)):
-                if self.board[row-r][column] == ['--'] or self.board[row-r][column][0][0] == 'b':
-                   moves.append(Move_Piece((row,column),((row-r),column), self.board))
+            if column+1 <= 7 and row+1 <= 7: #capturing to the right 
+                if self.board[row+1][column+1][0] == 'w':
+                    moves.append(Move_Piece((row,column),(row+1,column+1),self.board))
+                
+            if column-1 >= 0 and row+1 <= 7:
+                if self.board[row+1][column-1][0] == 'w': #capturing to the left 
+                    moves.append(Move_Piece((row,column),(row+1,column-1),self.board))
 
+    def rook_move(self, row, column, moves): #rook move logic. Rook can move in perpendicular way and for full lenght of the board (in cross.)
+        turn = self.board[row][column][0]
+        if self.white_first and turn == 'w':
+            for r in range(len(self.board)-1):
+                if 0 <= (row-r) and 0 <= (column-r):
+                    if self.board[row-r][column] == '--': #moving or capturing up
+                        moves.append(Move_Piece((row,column),(row-r,column),self.board))
+                       
+                if (row+r) <= (len(self.board)-1) and (column+r) <= (len(self.board)-1):
+                    if self.board[row+r][column] == '--': #moving or capturing down
+                        moves.append(Move_Piece((row,column),(row+r,column),self.board))
+
+            
         else:
-            for r in range(len(self.board)):
-                if self.board[row+r][column] == ['--'] or self.board[row+r][column][0][0] == 'b':
-                   moves.append(Move_Piece((row,column),((row+r),column), self.board))
+            pass
 
 class Move_Piece():
     def __init__(self, start_sq, end_sq, board):                          #engine part of moving pieces. we take start and end squares from chess_main-->move pieces-->player_clicks list
@@ -81,8 +102,8 @@ class Move_Piece():
         self.piece_moved = board[self.start_row][self.start_column]                                #variable of piece first selected
         self.piece_captured = board[self.end_row][self.end_column]                                 #variable of piece selected second
         self.ID = self.start_row*1000+self.start_column*100+self.end_row*10+self.end_column
-        
-    def __eq__(self, other):
+
+    def __eq__(self, other): 
         if isinstance(other, Move_Piece):
             return self.ID == other.ID
         return False 
@@ -98,9 +119,6 @@ class Move_Piece():
         move_log.append(self.end_column_letters+self.end_row_numbers)
 
 
-if __name__ == '__main__':
-    board = Board()
-    print(board.board())
 
 #when white on move and if white pieces are in the way print message 'INVALID MOVE!!' 
 #en passant 

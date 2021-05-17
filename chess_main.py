@@ -41,8 +41,8 @@ class Window():                                             #setting up window c
     def draw_pieces(self):
         for row in range(DIMENSIONS):
             for column in range(DIMENSIONS):
-                if (self.b.board[row][column][0]) !='--':
-                    self.piece_rect = self.win.blit(IMAGES[(self.b.board[row][column][0])],pygame.Rect((column*SQ_SIZE), (row*SQ_SIZE),SQ_SIZE,SQ_SIZE))
+                if (self.b.board[row][column]) !='--':
+                    self.piece_rect = self.win.blit(IMAGES[(self.b.board[row][column])],pygame.Rect((column*SQ_SIZE), (row*SQ_SIZE),SQ_SIZE,SQ_SIZE))
 
     def clock_speed(self):
         self.clock = pygame.time.Clock()
@@ -88,7 +88,8 @@ def main():
                         move_check = True
                         sq_sel = ()
                         player_clicks = []        
-        if move_check:
+
+        if move_check :
             valid_move = b.check_move() 
             move_check = False
         w.draw_window()
