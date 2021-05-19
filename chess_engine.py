@@ -47,6 +47,12 @@ class Board():
                        self.rook_move(row, column, moves)
                     elif piece == 'Q':
                         self.queen_move(row, column, moves)
+                    elif piece == 'K':
+                        self.king_move(row, column, moves)
+                    elif piece == 'N':
+                        self.knight_move(row, column, moves)
+                    elif piece == 'B':
+                        self.bishop_move(row, column, moves)
         return moves
 
     def queen_move(self, row, column, moves):
@@ -60,9 +66,65 @@ class Board():
                 end_c = column + c 
                 if -7 <= r <= 7 and -7 <= c <= 7 and 0 <= end_r <=7 and 0 <= end_c <=7:
                     end_sq = self.board[end_r][end_c]
-                    if end_sq == '--' or end_sq == enemy:
+                    if end_sq == '--' or end_sq[0] == enemy:
                         moves.append(Move_Piece((row,column), (end_r,end_c), self.board))
                         
+    def king_move(self, row, column, moves):
+        direction = ((1,0),(-1,0),(0,1),(0,-1),(1,1),(-1,1),(1,-1),(-1,-1))
+        enemy = 'b' if self.white_first else 'w'
+        for d in direction:
+            for l in range(len(self.board)):
+                r = l*d[0]
+                c = l*d[1]      
+                end_r = row + r 
+                end_c = column + c 
+                if -1 <= r <= 1 and -1 <= c <= 1 and 0 <= end_r <=7 and 0 <= end_c <=7:
+                    end_sq = self.board[end_r][end_c]
+                    if end_sq == '--' or end_sq[0] == enemy:
+                        moves.append(Move_Piece((row,column), (end_r,end_c), self.board))
+  
+    def knight_move(self, row, column, moves):
+        direction = ((2,1),(2,-1),(-2,1),(-2,-1),(1,2),(-1,2),(1,-2),(-1,-2))
+        enemy = 'b' if self.white_first else 'w'
+        for d in direction:
+            for l in range(len(self.board)):
+                r = l*d[0]
+                c = l*d[1]      
+                end_r = row + r 
+                end_c = column + c 
+                if -2 <= r <= 2 and -2 <= c <= 2 and 0 <= end_r <=7 and 0 <= end_c <=7:
+                    end_sq = self.board[end_r][end_c]
+                    if end_sq == '--' or end_sq[0] == enemy:
+                        moves.append(Move_Piece((row,column), (end_r,end_c), self.board))
+
+    def bishop_move(self, row, column, moves):
+        direction = ((1,1),(-1,1),(1,-1),(-1,-1))
+        enemy = 'b' if self.white_first else 'w'
+        for d in direction:
+            for l in range(len(self.board)):
+                r = l*d[0]
+                c = l*d[1]      
+                end_r = row + r 
+                end_c = column + c 
+                if -7 <= r <= 7 and -7 <= c <= 7 and 0 <= end_r <= 7 and 0 <= end_c <= 7:
+                    end_sq = self.board[end_r][end_c]
+                    if end_sq == '--' or end_sq[0] == enemy:
+                        moves.append(Move_Piece((row,column), (end_r,end_c), self.board))
+
+    def rook_move(self, row, column, moves): #rook move logic. Rook can move in perpendicular way and for full lenght of the board (in cross.)
+        direction = ((1,0),(-1,0),(0,1),(0,-1))
+        enemy = 'b' if self.white_first else 'w'
+        for d in direction:
+            for l in range(len(self.board)):
+                r = l*d[0]
+                c = l*d[1]      
+                end_r = row + r 
+                end_c = column + c 
+                if -7 <= r <= 7 and -7 <= c <= 7 and 0 <= end_r <=7 and 0 <= end_c <=7:
+                    end_sq = self.board[end_r][end_c]
+                    if end_sq == '--' or end_sq[0] == enemy:
+                        moves.append(Move_Piece((row,column), (end_r,end_c), self.board))
+
     def pawn_move(self, row, column, moves): #defining the piece moving logic. Pawn can move 2 or 1 square if is in start position or 1 if its not. 
         if self.white_first: 
             if self.board[row-1][column] == '--':
@@ -91,22 +153,6 @@ class Board():
             if 0 < column-1 and row+1 <= 7:
                 if self.board[row+1][column-1][0] == 'w': #capturing to the left 
                     moves.append(Move_Piece((row,column),(row+1,column-1),self.board))
-
-    def rook_move(self, row, column, moves): #rook move logic. Rook can move in perpendicular way and for full lenght of the board (in cross.)
-        for r in range(len(self.board)):
-            if self.white_first:
-                if 0 <= (row-r):
-                    if self.board[row-r][column] == '--' or self.board[row-r][column][0] == 'b': #moving or capturing up
-                       moves.append(Move_Piece((row,column),((row-r),column),self.board))
-                if 0 <= (column-r):
-                    if self.board[row][column-r] == '--' or self.board[row][column-r][0] == 'b': #moving or capturing left 
-                        moves.append(Move_Piece((row,column),((row),column-r),self.board))
-                if (row+r) <= (len(self.board)-1):
-                    if self.board[row+r][column] == '--' or self.board[row+r][column][0] == 'b': #moving or capturing up
-                        moves.append(Move_Piece((row,column),((row+r),column),self.board))
-                if (column+r) <= (len(self.board)-1):
-                    if self.board[row][column+r] == '--' or self.board[row][column+r][0] == 'b': #moving or capturing left 
-                        moves.append(Move_Piece((row,column),((row),column+r),self.board))
 
 class Move_Piece():
     def __init__(self, start_sq, end_sq, board):                          #engine part of moving pieces. we take start and end squares from chess_main-->move pieces-->player_clicks list
