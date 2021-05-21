@@ -88,10 +88,13 @@ def main():
                         move_check = True
                         sq_sel = ()
                         player_clicks = []        
+                    else:
+                        player_clicks = [sq_sel]
 
         if move_check :
             valid_move = b.check_move() 
             move_check = False
+
         w.draw_window()
     pygame.quit()   
 
