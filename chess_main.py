@@ -2,7 +2,7 @@ from chess_engine import Board
 from chess_engine import Move_Piece 
 import pygame
 
-WIDTH = HEIGHT = 450            #setting up the width and height of chess board
+WIDTH = HEIGHT = 480            #setting up the width and height of chess board
 DIMENSIONS = 8                  #number of squares on one side 
 SQ_SIZE = HEIGHT // DIMENSIONS  
 BACKGROUND = (0,0,0)            #colour of the background. probably not needed
@@ -53,8 +53,6 @@ class Window():                                             #setting up window c
         for piece in self.pieces:
             IMAGES[piece] = pygame.transform.scale(pygame.image.load(f'images/{piece}.png'), (SQ_SIZE,SQ_SIZE))
 
-     
-
 
 def main():
     w = Window()
@@ -74,6 +72,7 @@ def main():
                 m_x, m_y = pygame.mouse.get_pos()                       #return x and y coordinance of cursor
                 column = m_x//SQ_SIZE                                   #dividing x coordinant of mouse by sq_size to get row on the chess board
                 row = m_y//SQ_SIZE                                      #dividing y coordinant of mouse by sq_size to get column on the chess board
+
                 if sq_sel == (column,row):   
                     sq_sel = ()
                     player_clicks = []

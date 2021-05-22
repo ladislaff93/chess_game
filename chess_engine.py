@@ -8,7 +8,7 @@ class Board():
             ["bP","bP","bP","bP","bP","bP","bP","bP"],
             ['--','--','--','--','--','--','--','--'],
             ['--','--','--','--','--','--','--','--'],
-            ['--','--','wR','--','wB','--','--','--'],
+            ['--','--','--','--','--','--','--','--'],
             ['--','--','--','--','--','--','--','--'],            
             ["wP","wP","wP","wP","wP","wP","wP","wP"],
             ["wR","wN","wB","wQ","wK","wB","wN","wR"]
@@ -23,8 +23,10 @@ class Board():
         move.algebraic_notation(self.move_log)                          #return algebraic notation for actual move.                                             
         self.white_first = not self.white_first
         print('PIECE '+self.move_log[0]+' MOVE TO '+self.move_log[1])   
+        
         if not self.white_first:
             print('BLACK IS ON THE MOVE!')
+
         elif self.white_first:
             print('WHITE IS ON THE MOVE!')    
 
@@ -87,18 +89,15 @@ class Board():
         direction = ((1,1),(-1,1),(1,-1),(-1,-1))
         enemy = 'b' if self.white_first else 'w'
         for d in direction:
-            for l in range(len(self.board)):
-                r = l*d[0]
-                c = l*d[1]      
-                end_r = row + r 
-                end_c = column + c 
+            for l in range(1,(len(self.board))):
+                end_r = row + l*d[0] 
+                end_c = column + l*d[1] 
                 if 0 <= end_r <= 7 and 0 <= end_c <= 7:
                     end_sq = self.board[end_r][end_c]
                     if end_sq == '--' :
                         moves.append(Move_Piece((row,column), (end_r,end_c), self.board))
                     elif end_sq[0] == enemy:
                         moves.append(Move_Piece((row,column), (end_r,end_c), self.board))
-                        break
                     else:
                         break
 
@@ -106,22 +105,18 @@ class Board():
         direction = ((1,0),(-1,0),(0,1),(0,-1))
         enemy = 'b' if self.white_first else 'w'
         for d in direction:
-            for l in range(len(self.board)):
-                r = l*d[0]
-                c = l*d[1]      
-                end_r = row + r 
-                end_c = column + c 
+            for l in range(1,(len(self.board))):
+                end_r = row + l*d[0] 
+                end_c = column + l*d[1]  
                 if 0 <= end_r <=7 and 0 <= end_c <=7:
                     end_sq = self.board[end_r][end_c]
                     if end_sq == '--' :
                         moves.append(Move_Piece((row,column), (end_r,end_c), self.board))
                     elif end_sq[0] == enemy:
                         moves.append(Move_Piece((row,column), (end_r,end_c), self.board))
-                        break
+                        
                     else:
                         break
-                else:
-                    break
 
     def pawn_move(self, row, column, moves): #defining the piece moving logic. Pawn can move 2 or 1 square if is in start position or 1 if its not. 
         if self.white_first: 
@@ -177,9 +172,6 @@ class Move_Piece():
         move_log.append(self.start_column_letters+self.start_row_numbers)
         move_log.append(self.end_column_letters+self.end_row_numbers)
 
-
-
-#when white on move and if white pieces are in the way print message 'INVALID MOVE!!' 
 #en passant 
 #pawn changing in base aka Pawn Promotion
 #rosada mala velka aka Castling
