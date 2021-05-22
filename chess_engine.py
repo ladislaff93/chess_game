@@ -101,8 +101,6 @@ class Board():
                         break
                     else:
                         break
-                else:
-                    break
 
     def rook_move(self, row, column, moves): #rook move logic. Rook can move in perpendicular way and for full lenght of the board (in cross.)
         direction = ((1,0),(-1,0),(0,1),(0,-1))
