@@ -58,40 +58,50 @@ def main():
     w = Window()
     b = w.b
     w.pieces_images()
-    valid_move = b.check_move()
-    move_check = False
+    #legal_move return as list of legal moves.   
     sq_sel = ()
     player_clicks = []
+    #running game while loop
     run = True 
     while run:
+        valid_move = b.legal_move()
+        move_check = False
         w.clock_speed() 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:                  #if a click a left button on mouse the logic gets executed
-                m_x, m_y = pygame.mouse.get_pos()                       #return x and y coordinance of cursor
-                column = m_x//SQ_SIZE                                   #dividing x coordinant of mouse by sq_size to get row on the chess board
-                row = m_y//SQ_SIZE                                      #dividing y coordinant of mouse by sq_size to get column on the chess board
-
+            #if a click a left button on mouse the logic gets executed
+            elif event.type == pygame.MOUSEBUTTONDOWN:                  
+            #return x and y coordinance of cursor
+                m_x, m_y = pygame.mouse.get_pos()                       
+            #dividing x coordinant of mouse by sq_size to get row on the chess board
+                column = m_x//SQ_SIZE                                   
+            #dividing y coordinant of mouse by sq_size to get column on the chess board
+                row = m_y//SQ_SIZE                                     
+            #if same sq is selected undo the move
                 if sq_sel == (column,row):   
                     sq_sel = ()
                     player_clicks = []
                 else:
-                    sq_sel = (column, row)                              #tuple with the actual square position of mouse(column, row)  
-                    player_clicks.append([sq_sel[1], sq_sel[0]])        #we take the tuple(column, row) and append the piece that is actually on that position
-                
+            #tuple with the actual square position of mouse(column, row)
+                    sq_sel = (column, row)                               
+            #we take the tuple(column, row) and append the piece that is actually on that position
+                    player_clicks.append([sq_sel[1], sq_sel[0]])        
+            #when the lenght of list if 2 that mean we have all moves     
                 if len(player_clicks) == 2:
-                    move = Move_Piece(player_clicks[0],player_clicks[1], b.board)       #instentiation of move_piece class 
+                    #take the move that was made and check if it is legal.
+                    move = Move_Piece(player_clicks[0],player_clicks[1], b.board)      
                     if move in valid_move:
+                        #when move is legal. Change the board. Set the move_check equal to true and set tuple and list to empty.
                         b.move_on_board(move)
                         move_check = True
                         sq_sel = ()
                         player_clicks = []        
-                    else:
+                    elif move not in valid_move:
                         player_clicks = [sq_sel]
 
         if move_check :
-            valid_move = b.check_move() 
+            valid_move = b.legal_move() 
             move_check = False
 
         w.draw_window()

@@ -18,8 +18,8 @@ class Board():
         self.move_log = []                                            #move log for algebraic notation    
   
     def move_on_board(self, move):
-        self.board[move.start_row][move.start_column]='--'              #change the start square after moving piece
-        self.board[move.end_row][move.end_column]=move.piece_moved      #change the end square on start square
+        self.board[move.start_row][move.start_column] = '--'              #change the start square after moving piece
+        self.board[move.end_row][move.end_column] = move.piece_moved      #change the end square on start square
         move.algebraic_notation(self.move_log)                          #return algebraic notation for actual move.                                             
         self.white_first = not self.white_first
         print('PIECE '+self.move_log[0]+' MOVE TO '+self.move_log[1])   
@@ -32,8 +32,11 @@ class Board():
 
         if len(self.move_log) == 2:
             self.move_log = []    
-        
-    def check_move(self): #function for checking if the move what we made is actually legal. If the current move dont compromise the king piece(capturning).
+
+    #function for checking if the move what we made is actually legal.    
+    #If the current move dont compromise the king piece(capturning).
+    def legal_move(self): 
+
         return self.piece_move()   
 
     def piece_move(self): #for every piece on board function define it possible moves. And whose turn is(b or w)
@@ -163,14 +166,17 @@ class Move_Piece():
         return False 
 
     def algebraic_notation(self, move_log):
-        self.numbers = ['8','7','6','5','4','3','2','1']                        #numbers for row 
-        self.letters = ['a','b','c','d','e','f','g','h']                        #letters for column
+        #numbers for row
+        self.numbers = ['8','7','6','5','4','3','2','1']                         
+        #letters for column
+        self.letters = ['a','b','c','d','e','f','g','h']                        
         self.start_column_letters = self.letters[self.start_column]             
         self.start_row_numbers = self.numbers[self.start_row]                   
         self.end_column_letters = self.letters[self.end_column]
         self.end_row_numbers = self.numbers[self.end_row]
         move_log.append(self.start_column_letters+self.start_row_numbers)
         move_log.append(self.end_column_letters+self.end_row_numbers)
+
 
 #en passant 
 #pawn changing in base aka Pawn Promotion
