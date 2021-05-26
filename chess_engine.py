@@ -8,19 +8,29 @@ class Board():
             ["bP","bP","bP","bP","bP","bP","bP","bP"],
             ['--','--','--','--','--','--','--','--'],
             ['--','--','--','--','--','--','--','--'],
-            ['--','--','--','--','--','--','--','--'],
+            ['--','--','--','wK','--','--','--','--'],
             ['--','--','--','--','--','--','--','--'],            
             ["wP","wP","wP","wP","wP","wP","wP","wP"],
             ["wR","wN","wB","wQ","wK","wB","wN","wR"]
         ]
         self.white_first = True                                       #logic for white first move. 
+        self.white_king_position = (0,4)
+        self.black_king_position = (7,4)
         print('WHITE IS ON THE MOVE!')
         self.move_log = []                                            #move log for algebraic notation    
-  
+
+    def undo_move(self,move):
+        self.board[move.start_row][move.end_row] == move.piece_moved
+
     def move_on_board(self, move):
         self.board[move.start_row][move.start_column] = '--'              #change the start square after moving piece
         self.board[move.end_row][move.end_column] = move.piece_moved      #change the end square on start square
         move.algebraic_notation(self.move_log)                          #return algebraic notation for actual move.                                             
+        if Move_Piece().start_row == self.white_king_position[0] and Move_Piece().start_column == self.white_king_position[1]:
+            self.white_king_position = (move.end_row, move.end_column) 
+        elif Move_Piece().start_row == self.black_king_position[0] and Move_Piece().start_column == self.black_king_position[1]: 
+            self.black_king_position = (move.end_row, move.end_column) 
+            
         self.white_first = not self.white_first
         print('PIECE '+self.move_log[0]+' MOVE TO '+self.move_log[1])   
         
@@ -35,9 +45,35 @@ class Board():
 
     #function for checking if the move what we made is actually legal.    
     #If the current move dont compromise the king piece(capturning).
-    def legal_move(self): 
 
+    def legal_move(self):                         
+        pseudolegal_moves = self.piece_move()
+        for i in range(len(pseudolegal_moves)-1, -1, -1):
+            self.move_on_board(pseudolegal_moves[i])
+            self.white_first == False
+            if self.check_king():
+               pseudolegal_moves.remove(pseudolegal_moves[i]) 
+            self.white_first
         return self.piece_move()   
+
+
+
+
+    def check_king(self):
+        if self.white_first: 
+            return self.square_attacked(self.white_king_position[0],self.white_king_position[1]) 
+        else: 
+            return self.square_attacked(self.black_king_position[0],self.black_king_position[1]) 
+
+
+    def square_attacked(self, row, column):
+        self.white_first == False
+        opponent_moves = self.piece_move()
+        self.white_first 
+        for move in opponent_moves:
+            if move.end_r == row and move.end_c == column:
+                return True 
+        return False
 
     def piece_move(self): #for every piece on board function define it possible moves. And whose turn is(b or w)
         moves = []
@@ -164,6 +200,9 @@ class Move_Piece():
         if isinstance(other, Move_Piece):
             return self.ID == other.ID
         return False 
+
+    def __repr__(self):
+        return self.piece_captured
 
     def algebraic_notation(self, move_log):
         #numbers for row

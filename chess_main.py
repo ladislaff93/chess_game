@@ -94,10 +94,11 @@ def main():
                     if move in valid_move:
                         #when move is legal. Change the board. Set the move_check equal to true and set tuple and list to empty.
                         b.move_on_board(move)
+                        print(b.piece_move())
                         move_check = True
                         sq_sel = ()
                         player_clicks = []        
-                    elif move not in valid_move:
+                    else:
                         player_clicks = [sq_sel]
 
         if move_check :
