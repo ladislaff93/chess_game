@@ -14,75 +14,31 @@ class Board():
             ["wR","wN","wB","wQ","wK","wB","wN","wR"]
         ]
         self.white_first = True                                       #logic for white first move. 
-        self.black_king_position = (0,4)
-        self.white_king_position = (7,4)
-
         print('WHITE IS ON THE MOVE!')
-        self.move_algebraic_notation = []                                            #move log for algebraic notation    
-        self.move_journal = []
+        self.move_log = []                                                
+        self.chess_notation_log = []                                     #move log for algebraic notation
 
-    def undo_move(self):
-        if len(self.move_journal) != 0:
-            move = self.move_journal.pop()
-            self.board[move.start_row][move.end_column] == move.pseudolegal_moved
-            self.board[move.end_row][move.end_column] == move.piece_captured
-            self.white_first == False
-            if move.pseudolegal_moved == 'wK':
-                self.white_king_position = (move.start_row, move.start_column) 
-            elif move.pseudolegal_moved == 'bK': 
-                self.black_king_position = (move.start_row, move.start_column) 
+    def undo_on_board():
+        self.board[move.start_row][move.start_column] = move.              #change the start square after moving piece
+        self.board[move.end_row][move.end_column] = move.pseudolegal_moved      #change the end square on start square
 
     def move_on_board(self, move):
         self.board[move.start_row][move.start_column] = '--'              #change the start square after moving piece
         self.board[move.end_row][move.end_column] = move.pseudolegal_moved      #change the end square on start square
-        move.algebraic_notation(self.move_algebraic_notation)             #return algebraic notation for actual move.                                             
-        self.move_journal.append(move)
-    
-        if move.pseudolegal_moved == 'wK':
-            self.white_king_position = (move.end_row, move.end_column) 
-        elif move.pseudolegal_moved == 'bK': 
-            self.black_king_position = (move.end_row, move.end_column) 
-
+        move.algebraic_notation(self.chess_notation_log)                          #return algebraic notation for actual move.                                             
         self.white_first = not self.white_first
-
-        print('PIECE '+self.move_algebraic_notation[0]+' MOVE TO '+self.move_algebraic_notation[1])   
+        print('PIECE '+self.chess_notation_log[0]+' MOVE TO '+self.chess_notation_log[1])   
         
         print('BLACK IS ON THE MOVE!' if not self.white_first else 'WHITE IS ON THE MOVE!')
 
-        if len(self.move_algebraic_notation) == 2:
-            self.move_algebraic_notation = []    
+        if len(self.move_log) == 2:
+            self.move_log = []    
 
     #function for checking if the move what we made is actually legal.    
     #If the current move dont compromise the king piece(capturning).
+    def legal_move(self): 
 
-    def legal_move(self):                         
-        legal_moves = self.pseudolegal_move()
-        for i in range(len(legal_moves)-1, -1, -1):
-            self.move_on_board(legal_moves[i])
-            self.white_first = not self.white_first
-            if self.check_king():
-               legal_moves.remove(legal_moves[i]) 
-            self.white_first
-            self.undo_move()
-        return legal_moves   
-
-    def check_king(self):
-        if self.white_first: 
-            return self.square_attacked(self.white_king_position[0],self.white_king_position[1]) 
-        else: 
-            return self.square_attacked(self.black_king_position[0],self.black_king_position[1]) 
-
-    '''
-    Method for looking if the square where the kings are can be attacked 
-    '''
-    def square_attacked(self, row, column):
-        self.white_first = not self.white_first #switching to the opponent  
-        opponent_moves = self.pseudolegal_move() #generating all possible opponents moves
-        self.white_first    #switching back 
-        for move in opponent_moves:
-            if move.end_row== row and move.end_column == column:    #checking if square is attacked 
-                return True 
-        return False
+        return self.pseudolegal_move()   
 
     def pseudolegal_move(self): #for every piece on board function define it possible moves. And whose turn is(b or w)
         moves = []
@@ -191,7 +147,7 @@ class Board():
                 if self.board[row+1][column+1][0] == 'w':
                     moves.append(Move_Piece((row,column),(row+1,column+1),self.board))
                 
-            if 0 < column-1 and row+1 <= 7:
+            if 0 <= column-1 and row+1 <= 7:
                 if self.board[row+1][column-1][0] == 'w': #capturing to the left 
                     moves.append(Move_Piece((row,column),(row+1,column-1),self.board))
 
@@ -210,7 +166,7 @@ class Move_Piece():
             return self.ID == other.ID
         return False 
 
-    def algebraic_notation(self, move_algebraic_notation):
+    def algebraic_notation(self, chess_notation_log):
         #numbers for row
         self.numbers = ['8','7','6','5','4','3','2','1']                         
         #letters for column
@@ -219,8 +175,8 @@ class Move_Piece():
         self.start_row_numbers = self.numbers[self.start_row]                   
         self.end_column_letters = self.letters[self.end_column]
         self.end_row_numbers = self.numbers[self.end_row]
-        move_algebraic_notation.append(self.start_column_letters+self.start_row_numbers)
-        move_algebraic_notation.append(self.end_column_letters+self.end_row_numbers)
+        chess_notation_log.append(self.start_column_letters+self.start_row_numbers)
+        chess_notation_log.append(self.end_column_letters+self.end_row_numbers)
 
 
 #en passant 

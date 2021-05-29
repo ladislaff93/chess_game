@@ -51,7 +51,7 @@ def main():
                     move = Move_Piece(player_clicks[0],player_clicks[1], gui.board.board)      
                     if move in valid_move:
                         #when move is legal. Change the.board.ard. Set the move_check equal to true and set tuple and list to empty.
-                        gui.board.move_on.board.ard(move)
+                        gui.board.move_on_board(move)
                         print(gui.board.legal_move())
                         move_check = True
                         sq_sel = ()
